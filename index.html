@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Painel de Acessos RH</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f4f7f6; display: flex; justify-content: center; padding: 40px; }
+        .container { width: 100%; max-width: 900px; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        h2 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th { background: #2c3e50; color: white; padding: 15px; text-align: left; }
+        td { padding: 15px; border-bottom: 1px solid #eee; }
+        
+        .btn { 
+            padding: 8px 12px; cursor: pointer; border-radius: 6px; border: 1px solid #3498db;
+            background: transparent; color: #3498db; font-weight: 600; transition: 0.3s;
+        }
+        .btn:hover { background: #3498db; color: white; }
+        .btn-link { background: #27ae60; color: white; border: none; text-decoration: none; font-size: 14px; }
+        .btn-link:hover { background: #219150; }
+        
+        .badge { font-size: 12px; color: #7f8c8d; display: block; margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>🔐 Gerenciador de Senhas - RH</h2>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Serviço</th>
+                <th>Usuário</th>
+                <th>Senha</th>
+                <th>Acesso</th>
+            </tr>
+        </thead>
+        <tbody id="tabela-corpo">
+            </tbody>
+    </table>
+</div>
+
+<script>
+    // ==========================================
+    // AREA DE EDIÇÃO: ADICIONE OU REMOVA AQUI
+    // ==========================================
+    const dadosRH = [
+        { servico: "Portal eSocial", user: "admin_rh_01", pass: "SenhaForte@2024", link: "https://login.esocial.gov.br" },
+        { servico: "Plano de Saúde", user: "rh_empresa", pass: "Saude#987", link: "https://operadora.com.br/login" },
+        { servico: "Sistema de Ponto", user: "ponto_rh", pass: "Ponto123!", link: "https://ponto.empresa.com" },
+    ];
+
+    // Função para renderizar a tabela
+    const tabela = document.getElementById('tabela-corpo');
+    
+    dadosRH.forEach(item => {
+        const row = `
+            <tr>
+                <td><strong>${item.servico}</strong></td>
+                <td>
+                    <button class="btn" onclick="copiar('${item.user}')">Copiar User</button>
+                </td>
+                <td>
+                    <button class="btn" onclick="copiar('${item.pass}')">Copiar Senha</button>
+                </td>
+                <td>
+                    <a href="${item.link}" target="_blank" class="btn btn-link">Ir para o Site ↗</a>
+                </td>
+            </tr>
+        `;
+        tabela.innerHTML += row;
+    });
+
+    function copiar(texto) {
+        navigator.clipboard.writeText(texto);
+        // Feedback visual simples
+        const toast = document.createElement("div");
+        toast.innerText = "Copiado!";
+        toast.style = "position:fixed; bottom:20px; right:20px; background:#2c3e50; color:white; padding:10px 20px; border-radius:5px;";
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 1500);
+    }
+</script>
+
+</body>
+</html>
