@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Meu Gerenciador de Acessos</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f4f9; padding: 20px; }
+        .container { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h2 { color: #333; }
+        input { padding: 10px; margin: 5px 0; border: 1px solid #ddd; border-radius: 4px; width: calc(25% - 22px); }
+        button { padding: 10px 15px; cursor: pointer; background: #28a745; color: white; border: none; border-radius: 4px; }
+        button.delete { background: #dc3545; padding: 5px 10px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background: #f8f9fa; }
+        tr:hover { background: #f1f1f1; }
+        .password-cell { font-family: monospace; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>🔐 Meus Acessos</h2>
+    
+    <div id="form">
+        <input type="text" id="site" placeholder="Site/Serviço">
+        <input type="text" id="url" placeholder="Link (URL)">
+        <input type="text" id="user" placeholder="Login/Usuário">
+        <input type="password" id="pass" placeholder="Senha">
+        <button onclick="adicionarItem()">Salvar</button>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Site</th>
+                <th>Login</th>
+                <th>Senha (clique p/ ver)</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody id="tabela-corpo">
+            </tbody>
+    </table>
+</div>
+
+<script>
+    // Carregar dados ao abrir a página
+    let acessos = JSON.parse(localStorage.getItem('meusAcessos')) || [];
+
+    function renderizarTabela() {
+        const corpo = document.getElementById('tabela-corpo');
+        corpo.innerHTML = '';
+        
+        acessos.forEach((item, index) => {
+            corpo.innerHTML += `
+                <tr>
+                    <td><a href="${item.url.startsWith('http') ? item.url : 'http://'+item.url}" target="_blank">${item.site}</a></td>
+                    <td>${item.user}</td>
+                    <td class="password-cell" onclick="alert('Senha: ' + '${item.pass}')">******</td>
+                    <td><button class="delete" onclick="removerItem(${index})">Excluir</button></td>
+                </tr>
+            `;
+        });
+        localStorage.setItem('meusAcessos', JSON.stringify(acessos));
+    }
+
+    function adicionarItem() {
+        const site = document.getElementById('site').value;
+        const url = document.getElementById('url').value;
+        const user = document.getElementById('user').value;
+        const pass = document.getElementById('pass').value;
+
+        if(site && user && pass) {
+            acessos.push({ site, url, user, pass });
+            renderizarTabela();
+            // Limpar campos
+            document.querySelectorAll('input').forEach(i => i.value = '');
+        } else {
+            alert("Preencha ao menos Site, Usuário e Senha!");
+        }
+    }
+
+    function removerItem(index) {
+        if(confirm("Deseja mesmo excluir?")) {
+            acessos.splice(index, 1);
+            renderizarTabela();
+        }
+    }
+
+    // Iniciar
+    renderizarTabela();
+</script>
+
+</body>
+</html>
